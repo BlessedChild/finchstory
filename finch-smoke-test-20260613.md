@@ -1,63 +1,64 @@
-# Finch 冒烟测试报告 · 2026-06-13
+# Finch Smoke Test Report · 2026-06-13
 
-> 测试设备：Lenovo G470 (2011) · 4GB · i5-2450M · Windows 10
+> Device: Lenovo G470 · 4GB RAM · i5-2450M · Windows 10
 > Finch v1.4.3 (build 1070)
 
 ---
 
-## 测试项
+## Test Cases
 
-| # | 模块 | 操作 | 预期结果 |
-|---|------|------|---------|
-| 1 | 文件读取 | Read 本地文件 | 正确返回内容 |
-| 2 | 文件写入 | Write 新文件 + Read 验证 | 写入成功，内容一致 |
-| 3 | 文件编辑 | Edit 替换文本 | 替换成功 |
-| 4 | 内容搜索 | Grep 正则搜索 | 返回匹配结果 |
-| 5 | 文件查找 | Glob 通配匹配 | 返回文件列表 |
-| 6 | 网页搜索 | WebSearch 查询 | 返回搜索结果 |
-| 7 | 网页获取 | WebFetch 获取页面 | 成功返回内容 |
-| 8 | 记忆写入 | Memory remember | 写入成功 |
-| 9 | 记忆搜索 | Memory search | 搜索到结果 |
-| 10 | 记忆清理 | Memory forget | 清理成功 |
-| 11 | Shell 命令 | Bash 执行系统命令 | 正确输出 |
-| 12 | Skill 调用 | Skills invoke | 指令返回 |
-| 13 | 会话搜索 | Session search | 返回历史会话 |
-
----
-
-## 测试结果
-
-| # | 模块 | 操作 | 结果 | 耗时 | 备注 |
-|---|------|------|------|------|------|
-| 1 | 文件读取 | `Read` SOUL.md | ✅ **通过** | <1s | 正确返回 Markdown 内容 |
-| 2 | 文件写入 | `Write` + `Read` 验证 | ✅ **通过** | <1s | 写入 83 字节，内容一致 |
-| 3 | 文件编辑 | `Edit` 替换文本 | ✅ **通过** | <1s | 精准替换成功 |
-| 4 | 内容搜索 | `Grep` 正则匹配 | ✅ **通过** | <1s | 搜索到 6 个匹配文件 |
-| 5 | 文件查找 | `Glob` 通配匹配 | ✅ **通过** | <1s | 返回 2 个体验日记文件 |
-| 6 | 网页搜索 | `WebSearch` 查询 | ✅ **通过** | ~2s | 返回 2 条结果 |
-| 7 | 网页获取 | `WebFetch` 获取 | ⚠️ **超时** | >10s | example.com 连接超时，非工具问题 |
-| 8 | 记忆写入 | `Memory remember` | ✅ **通过** | <1s | 写入蒸馏队列 |
-| 9 | 记忆搜索 | `Memory search` | ✅ **通过** | <1s | 搜索到目标条目 |
-| 10 | 记忆清理 | `Memory forget` | ✅ **通过** | <1s | 成功归档匹配条目 |
-| 11 | Shell 命令 | `Bash` Python + 系统命令 | ✅ **通过** | <1s | Python 3.9.1, 时间戳正确 |
-| 12 | Skill 调用 | `Skills invoke` xlsx | ✅ **通过** | <1s | 返回完整 Skill 指令 |
-| 13 | 会话搜索 | `Session search` | ✅ **通过** | <1s | 返回 3 条历史会话 |
+| # | Module | Operation | Expected Result |
+|---|--------|-----------|-----------------|
+| 1 | File Read | Read local file | Return file content correctly |
+| 2 | File Write | Write + Read verify | Write success, content matches |
+| 3 | File Edit | Edit text replacement | Replace success |
+| 4 | Content Search | Grep regex match | Return matching results |
+| 5 | File Find | Glob wildcard match | Return file list |
+| 6 | Web Search | WebSearch query | Return search results |
+| 7 | Web Fetch | WebFetch URL fetch | Return page content |
+| 8 | Memory Write | Memory remember | Write success |
+| 9 | Memory Search | Memory search | Find target entry |
+| 10 | Memory Cleanup | Memory forget | Archive success |
+| 11 | Shell Command | Bash system command | Correct output |
+| 12 | Skill Invoke | Skills invoke | Return skill instructions |
+| 13 | Session Search | Session search | Return history sessions |
 
 ---
 
-## 汇总
+## Results
 
-| 指标 | 值 |
-|------|-----|
-| 总测试数 | 13 |
-| 通过 | **12** |
-| 超时/失败 | **1** (WebFetch 超时，网络环境因素) |
-| 通过率 | **92.3%** |
-| 平均响应时间 | <1 秒（纯本地操作）/ ~2 秒（网络操作） |
-| Shell 兼容性 | PowerShell + Python 均正常 |
-| 记忆系统 | 读写搜索清理全链路正常 |
-| 工具链完整性 | 所有内置工具均响应正常 |
+| # | Module | Operation | Result | Time | Notes |
+|---|--------|-----------|--------|------|-------|
+| 1 | File Read | Read SOUL.md | ✅ **PASS** | <1s | Correct Markdown content |
+| 2 | File Write | Write + Read verify | ✅ **PASS** | <1s | 83 bytes, content verified |
+| 3 | File Edit | Edit text replace | ✅ **PASS** | <1s | Precise replacement |
+| 4 | Content Search | Grep regex | ✅ **PASS** | <1s | 6 matching files found |
+| 5 | File Find | Glob wildcard | ✅ **PASS** | <1s | 2 diary files returned |
+| 6 | Web Search | WebSearch query | ✅ **PASS** | ~2s | 2 results returned |
+| 7 | Web Fetch | WebFetch URL | ⚠️ **TIMEOUT** | >10s | example.com unreachable, network issue |
+| 8 | Memory Write | Memory remember | ✅ **PASS** | <1s | Queued for distillation |
+| 9 | Memory Search | Memory search | ✅ **PASS** | <1s | Target entry found |
+| 10 | Memory Cleanup | Memory forget | ✅ **PASS** | <1s | Entry archived |
+| 11 | Shell Command | Bash python + system cmds | ✅ **PASS** | <1s | Python 3.9.1, timestamp correct |
+| 12 | Skill Invoke | Skills invoke xlsx | ✅ **PASS** | <1s | Full skill instructions returned |
+| 13 | Session Search | Session search | ✅ **PASS** | <1s | 3 history sessions returned |
 
-### 结论
+---
 
-Finch v1.4.3 在 15 年老设备上的核心功能冒烟测试通过率 **92.3%**。唯一超时的 WebFetch 属于网络环境问题（目标站点连接超时），非工具本身缺陷。本地操作全部瞬间响应，记忆系统工作正常，Skill 机制可正常触发。
+## Summary
+
+| Metric | Value |
+|--------|-------|
+| Total Tests | 13 |
+| Passed | **12** |
+| Timeout / Failed | **1** (WebFetch timeout - network environment) |
+| Pass Rate | **92.3%** |
+| Avg Response (local) | <1s |
+| Avg Response (network) | ~2s |
+| Shell Compatibility | PowerShell + Python OK |
+| Memory System | Read/Write/Search/Clear full chain OK |
+| Toolchain Completeness | All built-in tools responsive |
+
+### Conclusion
+
+Finch v1.4.3 core functionality smoke test on a 15-year-old device achieved **92.3%** pass rate. The only timeout (WebFetch) was caused by network environment (target site connection timeout), not a tool defect. All local operations responded instantly. The memory system works correctly and the Skill mechanism triggers as expected.
