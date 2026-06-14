@@ -99,27 +99,6 @@ Despite being 15 years old with 1/4 the RAM, the Lenovo G470 delivers a **notice
 
 ---
 
-## Part A: Quantitative Results
-
-| Test | Result |
-|------|--------|
-| Throughput avg (ms) | 0.24 |
-| Throughput variance | 0.03 |
-| 10000 lines render (ms) | 6.6 |
-| Finch Renderer MEM% | 34.8% (5.7GB) |
-| 20 concurrent tasks (ms) | 4.0 |
-
-## Part B: User Experience Results
-
-| # | Test | Score | Notes |
-|---|------|:-----:|-------|
-| B1 | Quick chat | 2-3 | Click-to-focus lag (seconds), message delay <1s, scrolling stutters |
-| B2 | Large content rendering | 2 | No freeze during generation, scrolling is not smooth |
-| B3 | App switching (Cmd+Tab) | 5 | Instant switch, no blank frames, no degradation |
-| B4 | Any task execution | 1 | Input freezes or responds very slowly during ANY task. Scrolling stutters. Most impactful issue. |
-| B5 | Consecutive file operations | 4 | ~0.5s perceived delay per operation |
-| B6 | Scroll conversation history | 3 | No blank placeholders, scroll slightly stutters |
-
 ## Summary
 
 | Metric | Score |
