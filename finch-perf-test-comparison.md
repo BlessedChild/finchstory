@@ -67,50 +67,9 @@
 Despite being 15 years old with 1/4 the RAM, the Lenovo G470 delivers a **noticeably better user experience (4.2 vs 2.8)**. The MacBook's 5.7GB Renderer process monopolizes system memory — on a 16GB machine that leaves only 10GB for everything else, causing swap pressure and UI freezes during tasks. The G470's Renderer uses only 1.3GB, leaving 2.7GB for the OS and other apps, which is actually more manageable on a 4GB system — partly because Windows 10 itself uses less memory than macOS, and partly because the older GPU drivers don't trigger the same memory allocation patterns in Electron.
 
 **The irony: a 15-year-old budget laptop runs Finch more smoothly than a 2017 flagship MacBook Pro.** This suggests Finch's Electron memory management needs optimization on high-end machines, not just low-end ones.
-
 ---
 
-## Appendix: MacBook Pro 2017 Baseline
-
-# Finch Frontend Performance Test
-
-> **Device:** MacBook Pro 2017 · 16GB RAM · i7-7920HQ · macOS  
-> **Date:** 2026-06-14  
-> **Finch:** v1.4.3
-
----
-
-## Device Comparison
-
-| Test | MacBook Pro 2017 | Lenovo G470 | Delta |
-|------|:---:|:---:|:---:|
-| **A: Throughput avg (ms)** | 0.24 | | |
-| **A: Throughput variance** | 0.03 | | |
-| **A: 10000 lines render (ms)** | 6.6 | | |
-| **A: Finch Renderer MEM%** | 34.8% (5.7GB) | | |
-| **A: 20 concurrent tasks (ms)** | 4.0 | | |
-| **B1: Quick chat** | 2-3/5 | /5 | |
-| **B2: Large content** | 2/5 | /5 | |
-| **B3: App switching** | 5/5 | /5 | |
-| **B4: Any task execution** | 1/5 | /5 | |
-| **B5: File ops latency** | 4/5 | /5 | |
-| **B6: Scroll history** | 3/5 | /5 | |
-| **Overall** | **2.8/5** | **/5** | |
-
----
-
-## Summary
-
-| Metric | Score |
-|--------|:-----:|
-| Average UX score | **2.8 / 5** |
-| Best | B3 (App switching: 5/5) |
-| Worst | B4 (Any task: 1/5) |
-| Bottleneck identified | Finch Renderer process memory (5.7GB, 34.8% of 16GB) |
-
-The toolchain itself is fast (0.24ms avg throughput, 6.6ms for 10K lines). The UI lag is caused by the Electron renderer process consuming excessive memory (5.7GB). This impacts input responsiveness, scrolling smoothness, and concurrent task handling — but does NOT affect app switching or basic file operations.
-
----
+## Methodology
 
 ## Methodology
 
