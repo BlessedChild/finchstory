@@ -1,26 +1,69 @@
-# Finch Frontend Performance Test · MacBook Pro 2017
+# Finch Frontend Performance Test
 
-> Date: 2026-06-14  
-> Device: MacBook Pro 2017 · 16GB RAM · i7-7920HQ · macOS  
-> Finch v1.4.3
-
----
-
-## Overview
-
-This document contains the full frontend performance test methodology, the test script, and the results from the MacBook Pro 2017. It is designed to be replicated on other devices for comparison.
-
-The test is split into two parts:
-- **Part A**: Quantitative benchmark (automated via `perf_test.py`)
-- **Part B**: User experience rating (manual, scored 1-5)
+> **Device:** MacBook Pro 2017 · 16GB RAM · i7-7920HQ · macOS  
+> **Date:** 2026-06-14  
+> **Finch:** v1.4.3
 
 ---
 
-## Part A: Quantitative Benchmark
+## Device Comparison
 
-### Test Script
+| Test | MacBook Pro 2017 | Lenovo G470 | Delta |
+|------|:---:|:---:|:---:|
+| **A: Throughput avg (ms)** | 0.24 | | |
+| **A: Throughput variance** | 0.03 | | |
+| **A: 10000 lines render (ms)** | 6.6 | | |
+| **A: Finch Renderer MEM%** | 34.8% (5.7GB) | | |
+| **A: 20 concurrent tasks (ms)** | 4.0 | | |
+| **B1: Quick chat** | 2-3/5 | /5 | |
+| **B2: Large content** | 2/5 | /5 | |
+| **B3: App switching** | 5/5 | /5 | |
+| **B4: Any task execution** | 1/5 | /5 | |
+| **B5: File ops latency** | 4/5 | /5 | |
+| **B6: Scroll history** | 3/5 | /5 | |
+| **Overall** | **2.8/5** | **/5** | |
 
-Save the following as `perf_test.py` and run it:
+---
+
+## Part A: Quantitative Results
+
+| Test | Result |
+|------|--------|
+| Throughput avg (ms) | 0.24 |
+| Throughput variance | 0.03 |
+| 10000 lines render (ms) | 6.6 |
+| Finch Renderer MEM% | 34.8% (5.7GB) |
+| 20 concurrent tasks (ms) | 4.0 |
+
+## Part B: User Experience Results
+
+| # | Test | Score | Notes |
+|---|------|:-----:|-------|
+| B1 | Quick chat | 2-3 | Click-to-focus lag (seconds), message delay <1s, scrolling stutters |
+| B2 | Large content rendering | 2 | No freeze during generation, scrolling is not smooth |
+| B3 | App switching (Cmd+Tab) | 5 | Instant switch, no blank frames, no degradation |
+| B4 | Any task execution | 1 | Input freezes or responds very slowly during ANY task. Scrolling stutters. Most impactful issue. |
+| B5 | Consecutive file operations | 4 | ~0.5s perceived delay per operation |
+| B6 | Scroll conversation history | 3 | No blank placeholders, scroll slightly stutters |
+
+## Summary
+
+| Metric | Score |
+|--------|:-----:|
+| Average UX score | **2.8 / 5** |
+| Best | B3 (App switching: 5/5) |
+| Worst | B4 (Any task: 1/5) |
+| Bottleneck identified | Finch Renderer process memory (5.7GB, 34.8% of 16GB) |
+
+The toolchain itself is fast (0.24ms avg throughput, 6.6ms for 10K lines). The UI lag is caused by the Electron renderer process consuming excessive memory (5.7GB). This impacts input responsiveness, scrolling smoothness, and concurrent task handling — but does NOT affect app switching or basic file operations.
+
+---
+
+## Methodology
+
+### Part A: Quantitative Benchmark
+
+Run the following script on each device:
 
 ```bash
 python3 perf_test.py
@@ -40,13 +83,11 @@ for i in range(10):
     start = time.time()
     open('/dev/null', 'w').write(str(i))
     mid = time.time()
-    # Read a sample config file
     sample = os.path.expanduser('~/finchnest/FINCH.md')
     if os.path.exists(sample):
         with open(sample, 'r') as f:
             _ = f.read(1024)
     else:
-        # fallback: read self
         with open(__file__, 'r') as f:
             _ = f.read(1024)
     end = time.time()
@@ -116,31 +157,16 @@ avg_concurrent = sum(concurrent_times) / len(concurrent_times)
 results['concurrent'] = {'total_20_tasks_ms': total, 'avg_per_task_ms': avg_concurrent}
 print(f"  20 concurrent tasks: {total:.1f}ms total, {avg_concurrent:.1f}ms avg each")
 
-# Save results (sanitized - no hostname)
 output = {'platform': sys.platform, 'python': sys.version, 'results': results}
 out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'perf-results.json')
 with open(out_path, 'w') as f:
     json.dump(output, f, indent=2)
 
-print(f"\n✅ Results saved to {out_path}")
+print(f"\nResults saved to {out_path}")
 print(json.dumps(results, indent=2))
 ```
 
-### MacBook Pro 2017 Results
-
-| Test | Result |
-|------|--------|
-| Throughput avg (ms) | 0.24 |
-| Throughput variance | 0.03 |
-| 10000 lines render (ms) | 6.6 |
-| Finch Renderer MEM% | 34.8% (5.7GB) |
-| 20 concurrent tasks (ms) | 4.0 |
-
----
-
-## Part B: User Experience Rating
-
-### Test Methodology
+### Part B: User Experience Rating
 
 Rate each test on a 1-5 scale:
 - **5** — Smooth, responsive
@@ -148,77 +174,19 @@ Rate each test on a 1-5 scale:
 - **1** — Severe lag, nearly unusable
 
 #### B1: Quick Chat
-
-1. Send 5 short messages in rapid succession (2-5 chars each)
-2. Observe: typing responsiveness, message display delay, scroll smoothness
+Send 5 short messages in rapid succession. Observe: typing responsiveness, message display delay, scroll smoothness.
 
 #### B2: Large Content Rendering
-
-1. Request a long list (50+ items)
-2. Observe: freeze during generation, scroll smoothness, conversation list transition
+Request a long list (50+ items). Observe: freeze during generation, scroll smoothness.
 
 #### B3: App Switching
-
-1. Switch between Finch and another app (Cmd+Tab), repeat 3 times
-2. Observe: window display speed, blank frames, performance degradation
+Switch between Finch and another app (Cmd+Tab), repeat 3 times. Observe: window display speed, blank frames.
 
 #### B4: Any Task Execution
-
-1. Execute any task (search, file read, etc.) while keeping input focused
-2. Observe: input responsiveness during task, result display speed, scroll smoothness
-3. **Note**: This test applies to ANY task, not just search
+Execute any task while keeping input focused. Observe: input responsiveness during task, scroll smoothness. **Note**: This applies to ANY task, not just search.
 
 #### B5: Consecutive File Operations
-
-1. Execute 3 file reads in succession
-2. Observe: perceived delay from request to result display
+Execute 3 file reads in succession. Observe: perceived delay from request to result.
 
 #### B6: Scroll History
-
-1. Scroll through current session from bottom to top
-2. Observe: blank placeholders, loading indicators, scroll bar responsiveness
-
-### MacBook Pro 2017 Results
-
-| # | Test | Score | Notes |
-|---|------|:-----:|-------|
-| B1 | Quick chat | 2-3 | Click-to-focus lag (seconds), message delay <1s, scrolling stutters |
-| B2 | Large content rendering | 2 | No freeze during generation, scrolling is not smooth |
-| B3 | App switching (Cmd+Tab) | 5 | Instant switch, no blank frames, no degradation |
-| B4 | Any task execution | 1 | Input freezes or responds very slowly during ANY task. Scrolling stutters. Most impactful issue. |
-| B5 | Consecutive file operations | 4 | ~0.5s perceived delay per operation |
-| B6 | Scroll conversation history | 3 | No blank placeholders, scroll slightly stutters |
-
----
-
-## Summary
-
-| Metric | Score |
-|--------|:-----:|
-| Average UX score | **2.8 / 5** |
-| Best | B3 (App switching: 5/5) |
-| Worst | B4 (Any task: 1/5) |
-| Bottleneck identified | Finch Renderer process memory (5.7GB, 34.8% of 16GB) |
-
-### Key Finding
-
-The toolchain itself is fast (0.24ms avg throughput, 6.6ms for 10K lines). The UI lag is caused by the Electron renderer process consuming excessive memory (5.7GB). This impacts input responsiveness, scrolling smoothness, and concurrent task handling — but does NOT affect app switching or basic file operations.
-
----
-
-## Device Comparison Table
-
-| Test | MacBook Pro 2017 | Lenovo G470 | Delta |
-|------|:---:|:---:|:---:|
-| **A: Throughput avg (ms)** | 0.24 | | |
-| **A: Throughput variance** | 0.03 | | |
-| **A: 10000 lines render (ms)** | 6.6 | | |
-| **A: Finch Renderer MEM%** | 34.8% (5.7GB) | | |
-| **A: 20 concurrent tasks (ms)** | 4.0 | | |
-| **B1: Quick chat** | 2-3/5 | /5 | |
-| **B2: Large content** | 2/5 | /5 | |
-| **B3: App switching** | 5/5 | /5 | |
-| **B4: Any task execution** | 1/5 | /5 | |
-| **B5: File ops latency** | 4/5 | /5 | |
-| **B6: Scroll history** | 3/5 | /5 | |
-| **Overall** | **2.8/5** | **/5** | |
+Scroll through current session from bottom to top. Observe: blank placeholders, loading indicators, scroll bar responsiveness.
