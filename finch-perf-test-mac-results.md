@@ -23,7 +23,7 @@
 | B1 | Quick chat | 2-3 | Click-to-focus lag (seconds), message delay <1s, scrolling stutters |
 | B2 | Large content rendering | 2 | No freeze during generation, scrolling is not smooth |
 | B3 | App switching (Cmd+Tab) | 5 | Instant switch, no blank frames, no degradation |
-| B4 | Search / query load | 1 | Input almost unusable during search, scrolling stutters |
+| B4 | Any task execution (incl. search) | 1 | Input box freezes or responds extremely slowly during ANY task, not just search. Scrolling stutters. This is the most impactful issue. |
 | B5 | Consecutive file operations | 4 | ~0.5s perceived delay per operation |
 | B6 | Scroll conversation history | 3 | No blank placeholders, scroll slightly stutters |
 
