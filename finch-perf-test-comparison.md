@@ -15,13 +15,13 @@
 | **A: 10000 lines render (ms)** | 6.6 | 30.6 | +24.0ms |
 | **A: Finch Renderer MEM%** | 34.8% (5.7GB) | 32.2% (1.3GB) | -2.6% |
 | **A: 20 concurrent tasks (ms)** | 4.0 | 15.6 | +11.6ms |
-| **B1: Quick chat** | 2-3/5 | 4/5 | +1.5 |
-| **B2: Large content** | 2/5 | 4/5 | +2 |
-| **B3: App switching** | 5/5 | 4/5 | -1 |
-| **B4: Any task execution** | 1/5 | 4/5 | +3 |
+| **B1: Quick chat** | 2-3/5 | 3/5 | ~0 |
+| **B2: Large content** | 2/5 | 3/5 | +1 |
+| **B3: App switching** | 5/5 | 5/5 | 0 |
+| **B4: Any task execution** | 1/5 | 3/5 | +2 |
 | **B5: File ops latency** | 4/5 | 5/5 | +1 |
 | **B6: Scroll history** | 3/5 | 4/5 | +1 |
-| **Overall** | **2.8/5** | **4.2/5** | **+1.4** |
+| **Overall** | **2.8/5** | **3.8/5** | **+1.0** |
 
 ---
 
@@ -46,20 +46,20 @@
 
 | # | Test | MacBook Score | G470 Score | Notes (G470) |
 |---|------|:-----:|:-----:|-------|
-| B1 | Quick chat | 2-3 | **4** | Typing responsive, messages appear instantly. No click-to-focus lag observed |
-| B2 | Large content rendering | 2 | **4** | No freeze during content generation. Scrolling large markdown is smooth |
-| B3 | App switching (Alt+Tab) | 5 | **4** | Instant switch, no blank frames, but slight hesitation on first switch after idle |
-| B4 | Any task execution | 1 | **4** | Input remains responsive during tasks. No freezing. Most improved area vs Mac |
+| B1 | Quick chat | 2-3 | **3** | Input click has ~1s lag to focus, scrolling stutters slightly. Still usable |
+| B2 | Large content rendering | 2 | **3** | Some lag during generation, scrolling a bit choppy, but typing remained possible |
+| B3 | App switching (Alt+Tab) | 5 | **5** | Instant switch, no blank frames, no degradation |
+| B4 | Any task execution | 1 | **3** | Input click ~1s delay during task, scrolling stutters. Much better than Mac (which was frozen) |
 | B5 | Consecutive file operations | 4 | **5** | All operations complete in <1s. Near-instant response |
-| B6 | Scroll conversation history | 3 | **4** | Smooth scrolling, no blank placeholders, slight stutter on very long content |
+| B6 | Scroll conversation history | 3 | **4** | Smooth when idle, no blank placeholders. Slight stutter during active tasks |
 
 ## Summary
 
 | Metric | MacBook Pro 2017 | Lenovo G470 |
 |--------|:-----:|:-----:|
-| Average UX score | **2.8 / 5** | **4.2 / 5** |
-| Best | B3 (App switching: 5/5) | B5 (File ops: 5/5) |
-| Worst | B4 (Any task: 1/5) | B3 (App switching: 4/5) |
+| Average UX score | **2.8 / 5** | **3.8 / 5** |
+| Best | B3 (App switching: 5/5) | B3, B5 (App switching + File ops: 5/5) |
+| Worst | B4 (Any task: 1/5) | B1, B2, B4 (Chat/Large content/Task: 3/5) |
 | Key bottleneck | Renderer memory 5.7GB causing UI freezes | CPU-bound throughput, but UX remains smooth |
 
 ### Key Insight
